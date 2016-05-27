@@ -10,7 +10,7 @@ The logtopus module should load `logtopus-redis-logger`, but not from its own no
 It should be load from that node_modules folder thats using logtopus. This gives developers the
 opportunity to load *optional modules* from the customers modules folder and the customer can decide which *optional modules* does he needed.
 
-The logtopus module loads a optional module by using `superimport`
+The logtopus module loads an optional module with `superimport`
 
 ```js
 // logtopus/index.js
@@ -27,10 +27,10 @@ let logtopus = require('logtopus');
 
 In this example tries logtopus to require `logtopus-redis-logger` in this order:
 
-1) `mymodule/node_modules/logtopus-redis-logger`
-2) `logtopus/node_modules/logtopus-redis-logger`
-3) `../node_modules/logtopus-redis-logger` (goes up until `/node_modules`)
-4) return null
+1) `mymodule/node_modules/logtopus-redis-logger`  
+2) `logtopus/node_modules/logtopus-redis-logger`  
+3) `../node_modules/logtopus-redis-logger` (goes up until `/node_modules`)  
+4) return null  
 
 And optional second argument overrides the directories which may contain an *optional module*
 
