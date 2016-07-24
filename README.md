@@ -28,7 +28,7 @@ let logtopus = require('logtopus');
 In this example tries logtopus to require `logtopus-redis-logger` in this order:
 
 1) `mymodule/node_modules/logtopus-redis-logger`  
-2) `logtopus/node_modules/logtopus-redis-logger`  
+2) `<cwd>/node_modules/logtopus-redis-logger`  
 3) `../node_modules/logtopus-redis-logger` (goes up until `/node_modules`)  
 4) return null  
 
