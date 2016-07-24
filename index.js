@@ -20,7 +20,6 @@ module.exports = function(moduleName, paths) {
   paths = paths || module.parent.paths.concat(getPaths());
   for (let dir of paths) {
     try {
-      console.log('Try', path.join(dir, moduleName));
       return require(path.join(dir, moduleName));
     } catch (err) {
       // Ignore errors
