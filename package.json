@@ -1,6 +1,6 @@
 {
   "name": "superimport",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "index.js",
   "author": "Andi Heinkelein <andifeind@noname-media.com>",
   "license": "MIT",
