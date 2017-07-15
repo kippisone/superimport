@@ -36,21 +36,16 @@ let readDir = function(dir) {
 };
 
 module.exports = function(moduleName, paths) {
-  paths = paths || module.parent.paths.concat(getPaths());
-  for (let dir of paths) {
-    try {
-      return require(path.join(dir, moduleName));
-    } catch (err) {
-      // Ignore errors
-    }
+  const modulePath = getModulePath(moduleName, paths);
+  if (modulePath === null) {
+    throw new Error(`Module '${moduleName}' was not found!\n`);
   }
 
-  throw new Error(`Module ${moduleName} not found!\nYou can install it by using the command 'npm install ${moduleName} --save'\n\n`);
+  return require(modulePath);
 };
 
-module.exports.importAll = function(dir, recursive) {
+function importAll(dir, recursive) {
   let files = readDir(dir).map(f => require(f));
-  console.log(files, dir)
   files.apply = function(ctx, args) {
     files.forEach(file => file.apply(ctx, args));
   };
@@ -62,3 +57,26 @@ module.exports.importAll = function(dir, recursive) {
 
   return files;
 };
+
+function moduleExists(moduleName, paths) {
+  return !!getModulePath(moduleName, paths)
+}
+
+function getModulePath(moduleName, paths) {
+  paths = paths || module.parent.paths.concat(getPaths());
+  for (let dir of paths) {
+    try {
+      const modulePath = path.join(dir, moduleName)
+      fs.accessSync(modulePath)
+      return modulePath
+    } catch (err) {
+      // Ignore errors
+    }
+  }
+
+  return null
+}
+
+module.exports.importAll = importAll
+module.exports.moduleExists = moduleExists
+module.exports.getModulePath = getModulePath
