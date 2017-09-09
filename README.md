@@ -40,3 +40,16 @@ And optional second argument overrides the directories which may contain an *opt
 const dirs = ['../foo/node_modules', '../bar/libs/'];
 const mod = superimport('somemodule', dirs);
 ```
+
+
+## Methods
+
+### superimport(*str* moduleName [, *arr* importDirs])
+
+See description above
+
+### superimport.importAll(*arr* dir [, *bool* recursive])
+
+Imports all `.js` or `.node` files from `dir`. The second `recursive` parameter is optional and includes all subdirectories.
+
+Returns an array of all required modules

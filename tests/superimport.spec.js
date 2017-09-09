@@ -30,7 +30,7 @@ describe('superimport', () => {
   });
 
   describe('superimport', () => {
-    it('imports a existing module from one of the paths', () => {
+    it('imports an existing module from one of the paths', () => {
       inspect(superimport('testLib.js', MODULE_DIRS)).isEql('one')
       inspect(superimport('otherLib.js', MODULE_DIRS)).isEql('two')
     });
@@ -43,4 +43,26 @@ describe('superimport', () => {
       inspect(superimport).withArgs('shittyLib.js', MODULE_DIRS).doesThrow(/NOT_FOUND_CONSTANT is not defined/)
     });
   });
+
+  describe('importAll()', () => {
+    it('imports all modules from a certain folder', () => {
+      const modules = superimport.importAll('./modules/sub/')
+      inspect(modules).isArray()
+      inspect(modules).hasLength(2)
+      inspect(modules).hasAnyValues([{
+        name: 'bar'
+      }])
+    })
+
+    it('imports all modules from a certain folder recursive', () => {
+      const modules = superimport.importAll('./modules/sub/', true)
+      inspect(modules).isArray()
+      inspect(modules).hasLength(4)
+      inspect(modules).hasAnyValues([{
+        name: 'bar'
+      }, {
+        name: 'blub'
+      }])
+    })
+  })
 });

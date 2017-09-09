@@ -17,13 +17,15 @@ let getPaths = function() {
   }
 }
 
-let readDir = function(dir) {
+function readDir(dir, recursive) {
   let files = [];
   fs.readdirSync(dir).forEach(file => {
-    let filePath = path.join(dir, file);
-    let stat = fs.statSync(filePath);
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
-      files = files.concat(readDir(filePath));
+      if (recursive) {
+        files = files.concat(readDir(filePath));
+      }
     }
     else {
       if (/\.js(on)?$/.test(file)) {
@@ -35,8 +37,8 @@ let readDir = function(dir) {
   return files;
 };
 
-module.exports = function(moduleName, paths) {
-  const modulePath = getModulePath(moduleName, paths);
+module.exports = function(moduleName, importDirs) {
+  const modulePath = getModulePath(moduleName, importDirs);
   if (modulePath === null) {
     throw new Error(`Module '${moduleName}' was not found!\n`);
   }
@@ -45,13 +47,17 @@ module.exports = function(moduleName, paths) {
 };
 
 function importAll(dir, recursive) {
-  let files = readDir(dir).map(f => require(f));
+  if (dir[0] === '.') {
+    dir = path.resolve(path.dirname(module.parent.filename), dir)
+  }
+
+  const files = readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => require(f));
   files.apply = function(ctx, args) {
     files.forEach(file => file.apply(ctx, args));
   };
 
   files.call = function(ctx) {
-    let args = Array.prototype.slice.call(arguments, 1);
+    const args = Array.prototype.slice.call(arguments, 1);
     files.apply(ctx, args);
   };
 
