@@ -50,7 +50,8 @@ describe('superimport', () => {
       inspect(modules).isArray()
       inspect(modules).hasLength(2)
       inspect(modules).hasAnyValues([{
-        name: 'bar'
+        name: 'bar',
+        filename: path.join(__dirname, './modules/sub/bar.js')
       }])
     })
 
@@ -59,9 +60,24 @@ describe('superimport', () => {
       inspect(modules).isArray()
       inspect(modules).hasLength(4)
       inspect(modules).hasAnyValues([{
-        name: 'bar'
+        name: 'bar',
+        filename: path.join(__dirname, './modules/sub/bar.js')
       }, {
-        name: 'blub'
+        name: 'blub',
+        filename: path.join(__dirname, './modules/sub/blub.js')
+      }])
+    })
+
+    it('imports all modules from certain folders recursive', () => {
+      const modules = superimport.importAll(['./modules/sub/'])
+      inspect(modules).isArray()
+      inspect(modules).hasLength(2)
+      inspect(modules).hasAnyValues([{
+        name: 'bar',
+        filename: path.join(__dirname, './modules/sub/bar.js')
+      }, {
+        name: 'foo',
+        filename: path.join(__dirname, './modules/sub/foo.js')
       }])
     })
   })
