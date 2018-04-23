@@ -35,7 +35,7 @@ function readDir(dir, recursive) {
   });
 
   return files;
-};
+}
 
 module.exports = function(moduleName, importDirs) {
   const modulePath = getModulePath(moduleName, importDirs);
@@ -51,7 +51,13 @@ function importAll(dir, recursive) {
     dir = path.resolve(path.dirname(module.parent.filename), dir)
   }
 
-  const files = readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => require(f));
+
+  const files = readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => {
+    const m = require(f)
+    m.filename = f
+    return m
+  });
+  
   files.apply = function(ctx, args) {
     files.forEach(file => file.apply(ctx, args));
   };
@@ -62,7 +68,7 @@ function importAll(dir, recursive) {
   };
 
   return files;
-};
+}
 
 function moduleExists(moduleName, paths) {
   return !!getModulePath(moduleName, paths)
