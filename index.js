@@ -46,28 +46,35 @@ module.exports = function(moduleName, importDirs) {
   return require(modulePath);
 };
 
-function importAll(dir, recursive) {
-  if (dir[0] === '.') {
-    dir = path.resolve(path.dirname(module.parent.filename), dir)
+function importAll(dirs, recursive) {
+  let files = []
+  if (!Array.isArray(dirs)) {
+    dirs = [dirs]
   }
 
+  dirs.forEach((dir) => {
+    if (dir[0] === '.') {
+      dir = path.resolve(path.dirname(module.parent.filename), dir)
+    }
 
-  const files = readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => {
-    const m = require(f)
-    m.filename = f
-    return m
-  });
-  
+
+    readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => {
+      const m = require(f)
+      m.filename = f
+      files.push(m)
+    });
+  })
+
   files.apply = function(ctx, args) {
-    files.forEach(file => file.apply(ctx, args));
-  };
+    files.forEach(file => file.apply(ctx, args))
+  }
 
   files.call = function(ctx) {
-    const args = Array.prototype.slice.call(arguments, 1);
-    files.apply(ctx, args);
-  };
+    const args = Array.prototype.slice.call(arguments, 1)
+    files.apply(ctx, args)
+  }
 
-  return files;
+  return files
 }
 
 function moduleExists(moduleName, paths) {
