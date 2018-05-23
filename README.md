@@ -50,7 +50,7 @@ See description above
 
 ### superimport.importAll(*arr* dir [, *obj* options])
 
-Imports all `.js` or `.node` files from `dir`. The second `options` argument is optional and changes the behaviour. Prior version 1.2.0, the second argument was a boolean and enabled recursive search. This is deprecated now.
+Imports all `.js` or `.node` files from `dir`. The second `options` argument is optional and changes the behaviour. Prior version 1.3.0, the second argument was a boolean and enabled recursive search. This is deprecated now.
 
 ##### Options:
 | Name        | Default | Description                 |
