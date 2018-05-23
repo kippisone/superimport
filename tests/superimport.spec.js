@@ -80,5 +80,13 @@ describe('superimport', () => {
         filename: path.join(__dirname, './modules/sub/foo.js')
       }])
     })
+
+    it('throws an error if folder does not exists', () => {
+      inspect(superimport.importAll).withArgs('./notfound/').doesThrow()
+    })
+
+    it('does not throws an error if silent flag is set', () => {
+      inspect(superimport.importAll('./notfound/', { silent: true })).isEql([])
+    })
   })
 });

@@ -17,14 +17,16 @@ let getPaths = function() {
   }
 }
 
-function readDir(dir, recursive) {
+function readDir(dir, opts) {
+  opts = opts || {}
+
   let files = [];
   fs.readdirSync(dir).forEach(file => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
-      if (recursive) {
-        files = files.concat(readDir(filePath));
+      if (opts.recursive) {
+        files = files.concat(readDir(filePath, opts));
       }
     }
     else {
@@ -46,7 +48,15 @@ module.exports = function(moduleName, importDirs) {
   return require(modulePath);
 };
 
-function importAll(dirs, recursive) {
+function importAll(dirs, opts) {
+  opts = opts || {}
+
+  if (typeof opts === 'boolean') {
+    opts = {
+      recursive: opts
+    }
+  }
+
   let files = []
   if (!Array.isArray(dirs)) {
     dirs = [dirs]
@@ -58,11 +68,17 @@ function importAll(dirs, recursive) {
     }
 
 
-    readDir(dir, recursive).filter(f => /\.(js|node)$/.test(f)).map(f => {
-      const m = require(f)
-      m.filename = f
-      files.push(m)
-    });
+    try {
+      readDir(dir, opts).filter(f => /\.(js|node)$/.test(f)).map(f => {
+        const m = require(f)
+        m.filename = f
+        files.push(m)
+      });
+    } catch (err) {
+      if (!opts.silent) {
+        throw err
+      }
+    }
   })
 
   files.apply = function(ctx, args) {
